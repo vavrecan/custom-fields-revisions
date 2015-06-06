@@ -1,5 +1,5 @@
 # Custom Fields Revisions for Wordpress
-Wordpress Plugin that add support for custom fields revisions
+Wordpress Plugin that adds support for custom fields revisions
 
 - Upload the entire custom-fields-revisions folder to the /wp-content/plugins/ directory.
 - Activate the plugin through the 'Plugins' menu in WordPress
