@@ -7,10 +7,12 @@
  * Author: Marek Vavrecan (vavrecan@gmail.com)
  **/
 
+/**
+ * Filter out all private custom fields that starts with underscore character
+ * @param $meta
+ * @return array
+ */
 function cfr_filter_meta($meta) {
-    // filter out all private custom fields
-    // that starts with underscore character
-
     $meta_filtered = [];
     foreach ($meta as $key => $value) {
         if ($key{0} != "_")
@@ -19,12 +21,22 @@ function cfr_filter_meta($meta) {
     return $meta_filtered;
 }
 
+/**
+ * Get filtered custom fields from metadata
+ * @param $post_id
+ * @return array
+ */
 function cfr_get_meta($post_id) {
     $meta = get_metadata("post", $post_id);
     $meta = cfr_filter_meta($meta);
     return $meta;
 }
 
+/**
+ * Save custom fields with post / revision post
+ * @param $post_id
+ * @param $meta
+ */
 function cfr_insert_meta($post_id, $meta) {
     foreach ($meta as $meta_key => $meta_value) {
         if (is_array($meta_value))
@@ -43,6 +55,13 @@ function cfr_delete_meta($post_id) {
     }
 }
 
+/**
+ * Creates text format from custom fields
+ * @param $value
+ * @param $field
+ * @param $revision
+ * @return string
+ */
 function cfr_field($value, $field, $revision)
 {
     $revision_id = $revision->ID;
@@ -57,6 +76,11 @@ function cfr_field($value, $field, $revision)
     return $return;
 }
 
+/**
+ * Create new field in revision view with title Custom Fields
+ * @param $fields
+ * @return mixed
+ */
 function cfr_fields($fields)
 {
     $fields["custom_fields"] = "Custom Fields";
@@ -69,6 +93,7 @@ function cfr_restore_revision($post_id, $revision_id)
     cfr_delete_meta($post_id);
     cfr_insert_meta($post_id, $meta);
 
+    // also update last revision custom fields
     $revisions = wp_get_post_revisions($post_id);
     if (count($revisions) > 0) {
         $last_revision = current($revisions);
@@ -77,9 +102,13 @@ function cfr_restore_revision($post_id, $revision_id)
     }
 }
 
+/**
+ * Wordpress hook callback to save metadata to revision post
+ * @param $post_id
+ * @param $post
+ */
 function cfr_save_post($post_id, $post)
 {
-    // when saving post to the new revision copy all meta to it
     if ($parent_id = wp_is_post_revision($post_id)) {
         $meta = cfr_get_meta(get_post($parent_id)->ID);
         if ($meta === false)
@@ -89,9 +118,16 @@ function cfr_save_post($post_id, $post)
     }
 }
 
+/**
+ * Check if custom fields were changed to make sure new revision will be created
+ * even when user did not modified title or content of the post
+ *
+ * @param $post_has_changed
+ * @param $last_revision
+ * @param $post
+ * @return bool
+ */
 function cfr_post_has_changed($post_has_changed, $last_revision, $post) {
-    // check if custom fields changed
-    // to make sure new revision will be created
     if (!$post_has_changed)
     {
         $meta = cfr_get_meta(get_post($last_revision)->ID);
