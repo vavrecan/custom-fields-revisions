@@ -1,5 +1,7 @@
 # Custom Fields Revisions for Wordpress
-Wordpress Plugin that adds support for custom fields revisions
+Enables custom fields in revisions and allows to restore them.
+
+<img src="assets/screenshot-1.png" />
 
 - Upload the entire custom-fields-revisions folder to the /wp-content/plugins/ directory.
 - Activate the plugin through the 'Plugins' menu in WordPress
