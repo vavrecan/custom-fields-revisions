@@ -41,7 +41,7 @@ function cfr_insert_meta($post_id, $meta) {
     foreach ($meta as $meta_key => $meta_value) {
         if (is_array($meta_value))
             foreach ($meta_value as $single_meta_value)
-                add_metadata('post', $post_id, $meta_key, unserialize($single_meta_value));
+                add_metadata('post', $post_id, $meta_key, maybe_unserialize($single_meta_value));
         else
             add_metadata('post', $post_id, $meta_key, $meta_value);
     }
